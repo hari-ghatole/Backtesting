@@ -6,7 +6,7 @@ import csv
 class FirstStrategy(bt.Strategy):
 
     params = (
-        ('period1', 5),('period2', 10),('period3',150 )
+        ('period1', 13),('period2', 55),('period3',144 )
         )
 
     def log(self, txt):
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
     data = bt.feeds.GenericCSVData(
         dataname = datapath,
-        fromdate = datetime(2020,1,1),
+        fromdate = datetime(2015,1,1),
         todate = datetime(2021,1,1),
         datetime = 0,
         timeframe = bt.TimeFrame.Minutes,
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     cerebro.adddata(data)
     cerebro.addsizer(bt.sizers.FixedSize, stake=75 )
     cerebro.broker.setcommission(commission = 0.0001)
-    cerebro.broker.setcash(300000.00)
+    cerebro.broker.setcash(1000000.00)
     
     starting_port = cerebro.broker.getvalue()
 
@@ -113,4 +113,7 @@ if __name__ == "__main__":
     ending_port = cerebro.broker.getvalue()
     print("Final porfolio value is :", cerebro.broker.getvalue())
     print("FINAL PROFIT/LOSS : ", str(ending_port-starting_port))
+    
+    #To plot the trades on a chart. 
+
     cerebro.plot(volume=False)
