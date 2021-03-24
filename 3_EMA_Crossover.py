@@ -6,19 +6,19 @@ import csv
 class FirstStrategy(bt.Strategy):
 
     params = (
-        ('period1', 13),('period2', 55),('period3',144 )
-        )
+    ('period_short', 25 ),('period_medium', 50),('period_long',110 ),
+    
+    )
+        
 
     def log(self, txt):
         print(txt)
 
     def __init__(self):
         self.dataclose = self.datas[0].close
-        self.ema1 = bt.indicators.EMA(self.datas[0], period = self.params.period1)
-        self.ema2 = bt.indicators.EMA(self.datas[0], period = self.params.period2)
-        self.ema3 = bt.indicators.EMA(self.datas[0], period = self.params.period3)
-        self.bias = 0
-        self.mylog = []
+        self.ema_short = bt.indicators.ExponentialMovingAverage(self.datas[0], period=self.params.period_short)
+        self.ema_medium = bt.indicators.ExponentialMovingAverage(self.datas[0], period=self.params.period_medium)
+        self.ema_long = bt.indicators.ExponentialMovingAverage(self.datas[0], period=self.params.period_long)
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -26,9 +26,11 @@ class FirstStrategy(bt.Strategy):
         
         if order.status in [order.Completed]:
             if order.isbuy():
-                self.log("Buy executed" + str(order.executed.price))
+                pass
+                #self.log("Buy executed" + str(order.executed.price))
             elif order.issell():
-                self.log("Sell executed" + str(order.executed.price))
+                pass
+                #self.log("Sell executed" + str(order.executed.price))
 
             self.bar_executed = len(self)
 
@@ -37,48 +39,44 @@ class FirstStrategy(bt.Strategy):
 
 
     def next(self):
+
+
+        self.current_date_string = self.datas[0].datetime.date(0).strftime("%Y %m %d")
+        self.current_time_string = self.datas[0].datetime.time(0).strftime("%H:%M")
+
+
         #self.log("Close: "+str(self.dataclose[0]))
-        if not self.position:
-            if self.dataclose[0] > self.ema3[0]:
-                if self.ema1[-1] < self.ema2[-1] and self.ema1[0] > self.ema2[0]:
-                    self.order = self.buy()
-                    self.log("Long ORDER INITIATED:" + str(self.dataclose[0]))
-                    self.bias = 1
-
-            if self.dataclose[0] < self.ema3[0]:
-                if self.ema1[-1] > self.ema2[-1] and self.ema1[0] < self.ema2[0]:
-                    self.order = self.sell()
-                    self.log("\nShort ORDER INITIATED:" + str(self.dataclose[0]))
-                    self.bias = -1
-                 
-            
-        else :
-            if self.bias == 1:
-                if self.ema1[0] < self.ema2[0] or self.dataclose[0] < self.ema3[0]:
+        if not self.position:      
+            if self.ema_short[0] > self.ema_medium[0] and self.dataclose[0] > self.ema_long[0]:
+                self.order = self.buy()
+                self.log("=== LONG ORDER INITIATED ===: " + str(self.dataclose[0]) + ", " + self.current_date_string + " " + self.current_time_string)
+            if self.ema_short[0] < self.ema_medium[0] and self.dataclose[0] < self.ema_long[0]:
+                self.order = self.sell()
+                self.log("=== SHORT ORDER INITIATED ===:" + str(self.dataclose[0]) + ", " + self.current_date_string + " " + self.current_time_string)
+        else:
+            if self.order.isbuy():
+                if self.ema_short[0] < self.ema_medium[0]:
                     self.close()
-                    self.log("LONG ORDER EXITED:" + str(self.dataclose[0]))
-                    self.bias = 0
-
-            if self.bias == -1:
-                if self.ema1[0] > self.ema2[0] or self.dataclose[0] > self.ema3[0]:
+                    self.log("Long exited" + ", " + self.current_date_string + " " + self.current_time_string)
+                    self.log(" ")
+            if self.order.issell():
+                if self.ema_short[0] > self.ema_medium[0] :
                     self.close()
-                    self.log("SHORT ORDER EXITED:\n" + str(self.dataclose[0]))
-                    self.bias = 0
+                    self.log("Short exited" + ", " + self.current_date_string + " " + self.current_time_string)
+                    self.log(" ")
 
-'''
+    '''
     def stop(self):
-        print(("EMA1 : "+ str(self.params.period1)+ ",EMA2 : "+ str(self.params.period2)+",EMA3 : "+ str(self.params.period3)+",Profit/Loss : " + str(int(self.broker.getvalue()-10000000.00))))
+        print(("EMA_S,"+ str(self.params.period_short)+ ",EMA_M,"+ str(self.params.period_medium)+",EMA_L,"+ str(self.params.period_long)+",Profit/Loss," + str(int(self.broker.getvalue()-10000000.00))))
         #print(self.mylog)
+    '''
 
-'''
-
-        
 if __name__ == "__main__":
 
     cerebro = bt.Cerebro()
-    cerebro.addstrategy(FirstStrategy, period1 = 13, period2 = 55, period3 = 144 )
+    cerebro.addstrategy(FirstStrategy)
+    #cerebro.optstrategy(FirstStrategy,period_short=range(5, 30,2),period_medium=range(30, 50, 2),period_long=range(70, 120, 5))
 
-    #cerebro.optstrategy(FirstStrategy, period1 = [], period2 = [], period3 = [])
         
     datapath = "Data Files/NSE_NIFTY_30min.csv"
 
