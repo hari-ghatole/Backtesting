@@ -109,7 +109,7 @@ if __name__ == "__main__":
     cerebro.addobserver(bt.observers.BuySell)
 
     #Remove the comment below to export results in a csv file.
-    #cerebro.addwriter(bt.WriterFile, csv = True, out = "Data Files"+ datetime.now().strftime("%H:%M")+".csv")
+    # cerebro.addwriter(bt.WriterFile, csv = True, out = "Data Files"+ datetime.now().strftime("%H:%M")+".csv")
     
     starting_port = cerebro.broker.getvalue()
 
