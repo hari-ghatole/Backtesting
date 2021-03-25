@@ -102,9 +102,9 @@ if __name__ == "__main__":
     cerebro.broker.setcommission(commission = 0.0001)
     cerebro.broker.setcash(1000000.00)
 
-    cerebro.addobserver(bt.observers.Trades)
-    cerebro.addobserver(bt.observers.DrawDown)
-    cerebro.addobserver(bt.observers.BuySell)
+    #cerebro.addobserver(bt.observers.Trades)
+    #cerebro.addobserver(bt.observers.DrawDown)
+    #cerebro.addobserver(bt.observers.BuySell)
 
     #Remove the comment below to export results in a csv file.
     # cerebro.addwriter(bt.WriterFile, csv = True, out = "Data Files"+ datetime.now().strftime("%H:%M")+".csv")
