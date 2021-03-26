@@ -43,6 +43,15 @@ class FirstStrategy(bt.Strategy):
         self.current_time_string = self.datas[0].datetime.time(-2).strftime("%H:%M")
 
 
+        #HH
+        if self.datahigh[-6] < self.datahigh[-5] and self.datahigh[-5] < self.datahigh[-4] and self.datahigh[-4] < self.datahigh[-3] and self.datahigh[-2] < self.datahigh[-3] and self.datahigh[-1] < self.datahigh[-2] and  self.datahigh[0] < self.datahigh[-1] or self.datahigh[-6] < self.datahigh[-3] and self.datahigh[-5] < self.datahigh[-3] and self.datahigh[-4] < self.datahigh[-3] and  self.datahigh[-2] < self.datahigh[-3] and self.datahigh[-1] < self.datahigh[-3] and  self.datahigh[0] < self.datahigh[-3]:
+                self.log("<<< H >>> " + str(self.datahigh[-3]) + ", " + self.current_date_string + " " + self.current_time_string)
+        
+        #LL
+        if self.datalow[-6] > self.datahigh[-5] and self.datahigh[-5] > self.datahigh[-4] and self.datahigh[-4] > self.datahigh[-3] and self.datahigh[-2] > self.datahigh[-3] and self.datahigh[-1] > self.datahigh[-2] and self.datahigh[0] > self.datahigh[-1] or self.datahigh[-6] > self.datahigh[-3] and self.datahigh[-5] > self.datahigh[-3] and self.datahigh[-4] > self.datahigh[-3] and  self.datahigh[-2] > self.datahigh[-3] and self.datahigh[-1] > self.datahigh[-3] and  self.datahigh[0] > self.datahigh[-3]:
+                self.log("<<< L >>>" + str(self.datalow[-3]) + ", " + self.current_date_string + " " + self.current_time_string)
+        
+        '''
         #HH/LH
         if self.datahigh[-6] < self.datahigh[-3] and self.datahigh[-5] < self.datahigh[-3] and self.datahigh[-4] < self.datahigh[-3] and  self.datahigh[-2] < self.datahigh[-3] and self.datahigh[-1] < self.datahigh[-3] and  self.datahigh[0] < self.datahigh[-3]:
             self.log("H-H " + str(self.datahigh[-3]) + ", " + self.current_date_string + " " + self.current_time_string)
@@ -50,7 +59,7 @@ class FirstStrategy(bt.Strategy):
         #LL/HL
         if self.datalow[-6] > self.datalow[-3] and self.datalow[-5] > self.datalow[-3] and self.datalow[-4] > self.datalow[-3] and self.datalow[-2] > self.datalow[-3] and self.datalow[-1] > self.datalow[-3] and self.datalow[0] > self.datalow[-3]:
             self.log("L-L " + str(self.datalow[-3]) + ", " + self.current_date_string + " " + self.current_time_string)
-
+        '''
 
 if __name__ == "__main__":
 
