@@ -49,33 +49,33 @@ class FirstStrategy(bt.Strategy):
         if not self.position:      
             if self.ema_short[0] > self.ema_medium[0] and self.dataclose[0] > self.ema_long[0]:
                 self.order = self.buy()
-                self.log("=== LONG ORDER INITIATED ===: " + str(self.dataclose[0]) + ", " + self.current_date_string + " " + self.current_time_string)
+                #self.log("=== LONG ORDER INITIATED ===: " + str(self.dataclose[0]) + ", " + self.current_date_string + " " + self.current_time_string)
             if self.ema_short[0] < self.ema_medium[0] and self.dataclose[0] < self.ema_long[0]:
                 self.order = self.sell()
-                self.log("=== SHORT ORDER INITIATED ===:" + str(self.dataclose[0]) + ", " + self.current_date_string + " " + self.current_time_string)
+                #self.log("=== SHORT ORDER INITIATED ===:" + str(self.dataclose[0]) + ", " + self.current_date_string + " " + self.current_time_string)
         else:
             if self.order.isbuy():
                 if self.ema_short[0] < self.ema_medium[0]:
                     self.close()
-                    self.log("Long exited" + ", " + self.current_date_string + " " + self.current_time_string)
-                    self.log(" ")
+                    #self.log("Long exited" + ", " + self.current_date_string + " " + self.current_time_string)
+                    #self.log(" ")
             if self.order.issell():
                 if self.ema_short[0] > self.ema_medium[0] :
                     self.close()
-                    self.log("Short exited" + ", " + self.current_date_string + " " + self.current_time_string)
-                    self.log(" ")
+                    #self.log("Short exited" + ", " + self.current_date_string + " " + self.current_time_string)
+                    #self.log(" ")
 
-    '''
+
     def stop(self):
         print(("EMA_S,"+ str(self.params.period_short)+ ",EMA_M,"+ str(self.params.period_medium)+",EMA_L,"+ str(self.params.period_long)+",Profit/Loss," + str(int(self.broker.getvalue()-10000000.00))))
         #print(self.mylog)
-    '''
+
 
 if __name__ == "__main__":
 
     cerebro = bt.Cerebro()
-    cerebro.addstrategy(FirstStrategy)
-    #cerebro.optstrategy(FirstStrategy,period_short=range(5, 30,2),period_medium=range(30, 50, 2),period_long=range(70, 120, 5))
+    #cerebro.addstrategy(FirstStrategy)
+    cerebro.optstrategy(FirstStrategy,period_short=range(5, 30,5),period_medium=range(30, 50, 5),period_long=range(70, 120, 5))
 
         
     datapath = "Data Files/NSE_NIFTY_30min.csv"
@@ -121,4 +121,4 @@ if __name__ == "__main__":
     
     #To plot the trades on a chart. 
 
-    cerebro.plot(volume=False)
+    #cerebro.plot(volume=False)
