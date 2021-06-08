@@ -1,10 +1,11 @@
-#Strategy Name - 50EMA and 200 EMA Crossover - Long Only
-
+# Strategy Name - 50EMA and 200 EMA Crossover - Long Only
+# NSE_NIFTY_30min.csv
 from __future__ import (absolute_import, division, print_function,
-    unicode_literals)
+                        unicode_literals)
 
 import backtrader as bt
 from datetime import datetime
+
 
 class FirstStrategy(bt.Strategy):
 
@@ -13,9 +14,10 @@ class FirstStrategy(bt.Strategy):
 
     def __init__(self):
         self.dataclose = self.datas[0].close
-        self.ema50 = bt.indicators.ExponentialMovingAverage(self.datas[0], period=50)
-        self.ema200 = bt.indicators.ExponentialMovingAverage(self.datas[0], period=200)
-
+        self.ema50 = bt.indicators.ExponentialMovingAverage(
+            self.datas[0], period=50)
+        self.ema200 = bt.indicators.ExponentialMovingAverage(
+            self.datas[0], period=200)
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -29,45 +31,50 @@ class FirstStrategy(bt.Strategy):
             self.bar_executed = len(self)
 
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-            self.log("Order canceled/Margin not sufficient" )
-
+            self.log("Order canceled/Margin not sufficient")
 
     def next(self):
+        self.current_date_string = self.datas[0].datetime.date(
+            -3).strftime("%Y %m %d")
+        self.current_time_string = self.datas[0].datetime.time(
+            -3).strftime("%H:%M")
+
         if not self.position:
             if self.ema50[0] > self.ema200[0]:
                 self.order = self.buy()
-                self.log("BUY ORDER CREATED: " +str(self.dataclose[0]))
+                self.log("BUY ORDER CREATED: " + str(
+                    self.dataclose[0]) + self.current_date_string + " " + self.current_time_string)
         else:
             if self.ema50[0] < self.ema200[0]:
                 self.close()
-                self.log("ORDER EXITED: " +str(self.dataclose[0]))
-     
+                self.log("ORDER EXITED: " + str(
+                    self.dataclose[0]) + self.current_date_string + " " + self.current_time_string)
+
 
 if __name__ == '__main__':
 
     cerebro = bt.Cerebro()
     cerebro.addstrategy(FirstStrategy)
 
-    datapath = "Data Files/NSE_NIFTY_30min.csv"
+    datapath = "Data Files/NSE_NIFTY_30min_old.csv"
 
     data = bt.feeds.GenericCSVData(
-        dataname = datapath,
-        fromdate = datetime(2019,1,1),
-        todate = datetime(2021,1,1),
-        datetime = 0,
-        timeframe = bt.TimeFrame.Minutes,
-        compression = 1,
-        dtformat = ('%Y-%m-%d %H:%M:%S'),
-        open = 1,
-        high = 2,
-        low = 3,
-        close = 4,
-        volume = None,
-        openinterest = None,
-        reverse = False,
-        header = 0
-        )
-
+        dataname=datapath,
+        fromdate=datetime(2019, 1, 1),
+        todate=datetime(2021, 1, 1),
+        datetime=0,
+        timeframe=bt.TimeFrame.Minutes,
+        compression=1,
+        dtformat=('%Y-%m-%d %H:%M:%S'),
+        open=1,
+        high=2,
+        low=3,
+        close=4,
+        volume=None,
+        openinterest=None,
+        reverse=False,
+        header=0
+    )
 
     cerebro.adddata(data)
 
@@ -82,4 +89,4 @@ if __name__ == '__main__':
 
     print('Final portfolio value: ', cerebro.broker.getvalue())
 
-    #cerebro.plot(volume=False)
+    cerebro.plot(volume=False)
