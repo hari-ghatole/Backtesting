@@ -1,2 +1,2 @@
 # Backtesting
- Backtesting various trading strategies using Python.
+ Backtesting various trading strategies using the Backtrader module in Python. 
